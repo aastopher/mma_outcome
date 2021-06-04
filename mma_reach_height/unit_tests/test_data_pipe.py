@@ -1,5 +1,5 @@
 import unittest, sys
-sys.path.append("modules/")
+sys.path.append("mma_reach_height/modules/")
 from data_pipe import *
 
 class TestDataPipe(unittest.TestCase):

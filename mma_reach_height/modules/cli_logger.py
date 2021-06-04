@@ -11,9 +11,9 @@ class CLILogger:
     def _logging_config(self):
         root = logging.getLogger()
         root.setLevel(logging.DEBUG)
-        if not os.path.exists('logs'):
-            os.mkdir('logs')
-        fh = logging.FileHandler(f'logs/{self.log_name}.log','w')
+        if not os.path.exists('mma_reach_height/logs'):
+            os.mkdir('mma_reach_height/logs')
+        fh = logging.FileHandler(f'mma_reach_height/logs/{self.log_name}.log','w')
         fh.setLevel(self.log_lvl)
         formatter = logging.Formatter('%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
         fh.setFormatter(formatter)

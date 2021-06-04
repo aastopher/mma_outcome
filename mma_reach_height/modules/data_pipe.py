@@ -3,7 +3,7 @@
 import logging, csv, os, sys
 import pandas as pd
 import numpy as np
-sys.path.append("modules/")
+sys.path.append("mma_reach_height/modules/")
 from cli_logger import *
 
 #instantiate cli args and class loggers using cli_logger module
@@ -11,6 +11,7 @@ cli = CLILogger('data_pipe',['RawData','ProcessedData','CalculatedData'])
 rawDataLogger = logging.getLogger('RawData')
 processedDataLogger = logging.getLogger('ProcessedData')
 calculatedDataLogger = logging.getLogger('CalculatedData')
+infoLogger = logging.getLogger('console')
 
 #instantiate static vars
 MONTH_NUMS = {'january':'01','february':'02','march':'03','april':'04','may':'05','june':'06','july':'07','august':'08','september':'09','october':'10','november':'11','december':'12'}
@@ -20,17 +21,15 @@ class RawData:
         rawDataLogger.debug(f'RawData instantiated')
         self.fighters = []
         self.matches = []
-        if os.path.exists('data/raw_fighter_details.csv'):
+        if os.path.exists('mma_reach_height/data/raw_fighter_details.csv'):
             rawDataLogger.info('parsing raw data')
             self._load_fighters()
             self._load_matches()
-        else:
-            DataLoader()
     def _load_fighters(self):
         try:
             rawDataLogger.debug('\'raw_fighter_details.csv\' exists')
             rawDataLogger.debug('parsing \'raw_fighter_details.csv\' into Fighter DataFrame')
-            f = pd.read_csv('data/raw_fighter_details.csv',header=None,skiprows=[0])
+            f = pd.read_csv('mma_reach_height/data/raw_fighter_details.csv',header=None,skiprows=[0])
             for i in range(len(f)):
                 if not pd.isna(f[3][i]) and not pd.isna(f[1][i]):
                     name = (f[0][i]).lower()
@@ -47,7 +46,7 @@ class RawData:
         try:
             rawDataLogger.debug('\'raw_total_fight_data.csv\' exists')
             rawDataLogger.debug('parsing \'raw_total_fight_data.csv\' into Match DataFrame')
-            f = pd.read_csv('data/raw_total_fight_data.csv',header=None,skiprows=[0])
+            f = pd.read_csv('mma_reach_height/data/raw_total_fight_data.csv',header=None,skiprows=[0])
             for i in range(len(f)):
                 r_fighter = f[0][i].split(';')[0].lower()
                 b_fighter = f[0][i].split(';')[1].lower()
@@ -88,12 +87,12 @@ class ProcessedData:
         self._pre_proc_data()
         self._reach__outcome()
         self._height_outcome()
-        if os.path.exists('data/raw_fighter_details.csv') and os.path.exists('data/raw_total_fight_data.csv') and not os.path.exists('data_output/processed_data.csv'):
-            if not os.path.exists('data_output'):
+        if os.path.exists('mma_reach_height/data/raw_fighter_details.csv') and os.path.exists('mma_reach_height/data/raw_total_fight_data.csv') and not os.path.exists('data_output/processed_data.csv'):
+            if not os.path.exists('mma_reach_height/data_output'):
                 processedDataLogger.info('creating data_output directory')
-                os.mkdir('data_output')
+                os.mkdir('mma_reach_height/data_output')
             processedDataLogger.debug('writing \'proccessed_data.csv\'')
-            self.data.to_csv('data_output/processed_data.csv')
+            self.data.to_csv('mma_reach_height/data_output/processed_data.csv')
     def _pre_proc_data(self):
         processedDataLogger.info('pre-processing data for generated results')
         r_reach,r_height = [],[]
@@ -146,8 +145,8 @@ class CalculatedData:
         self.reach_win_percentage = None
         self.height_win_percentage = None
         try:
-            if os.path.exists('data_output/processed_data.csv'):
-                self.data = pd.read_csv('data_output/processed_data.csv',header=None,skiprows=[0],names=['r_fighter','r_reach','r_height','b_fighter','b_reach','b_height','win_type','last_round','match_type','match_length','referee','date','winner','reach_win','height_win'])
+            if os.path.exists('mma_reach_height/data_output/processed_data.csv'):
+                self.data = pd.read_csv('mma_reach_height/data_output/processed_data.csv',header=None,skiprows=[0],names=['r_fighter','r_reach','r_height','b_fighter','b_reach','b_height','win_type','last_round','match_type','match_length','referee','date','winner','reach_win','height_win'])
                 calculatedDataLogger.info('loaded existing processed_data')
             else:
                 self.data = ProcessedData().data
@@ -159,4 +158,4 @@ class CalculatedData:
             else:
                 raise FileNotFoundError
         except FileNotFoundError as err:
-            errorLogger.error('MISSING FILE: unable to perform calculations')
+            infoLogger.error('MISSING FILE: unable to perform calculations')

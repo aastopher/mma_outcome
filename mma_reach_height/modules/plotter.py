@@ -4,7 +4,7 @@ import logging, csv, os, sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-sys.path.append("modules/")
+sys.path.append("mma_reach_height/modules/")
 from cli_logger import *
 
 #instantiate cli args and class loggers using cli_logger module
@@ -47,7 +47,7 @@ class Plotter:
         plt.setp(autotexts, size = 8, weight ="bold")
         ax.set_title(f"{reach_height} win-loss distribution")
 
-        plt.savefig(f'data_output/{reach_height}_pie')
+        plt.savefig(f'mma_reach_height/data_output/{reach_height}_pie')
     #NOT WORKING
     def _win_type_plot(self, reach_height):
         plotterLogger.info(f'plotting {reach_height} win types')
@@ -68,7 +68,7 @@ class Plotter:
         plt.title(f"{reach_height} Wins Per Win Type")
         plt.xticks(x_pos, win_types, rotation=45)
         plt.tight_layout()
-        plt.savefig(f'data_output/{reach_height}_wins_per_win_type')
+        plt.savefig(f'mma_reach_height/data_output/{reach_height}_wins_per_win_type')
 
         data = set(self.data['win_type'].tolist())
         # print(data)
