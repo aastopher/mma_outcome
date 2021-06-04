@@ -89,7 +89,7 @@ class OddsAnalyser():
     def _load_data(self):
         """ Cleanses data generated from Kaggle and writes it to disk. """
 
-        logger.info('EXECUTE _clean_data()')
+        logger.info('EXECUTING _clean_data()')
 
         # Ensure we have a file to clean
         if not os.path.exists(GET_OUTFILE):
@@ -121,38 +121,34 @@ class OddsAnalyser():
                     },
                     skip_blank_lines= True
                 )
-                # Drop NAs
+
+                # Drop NA values
                 logger.info('Dropping NaN rows')
                 df.dropna(how= 'all', inplace= True)
 
                 # Rename our columns for consistency
+                logger.info('Renaming column headings')
                 cols = ['r_fighter', 'b_fighter', 'r_odds', 'b_odds', 'date', 'location', 'country', 'winner', 'title_bout', 'weight_class', 'gender']
                 df.columns = cols
 
                 # Add resolved winner column with name
-                df['winner_resolved'] = ['r_fighter' if x.lower() == 'red' else 'b_fighter' for x in df['winner']]
-                logger.debug(df['winner_resolved'])
+                logger.info('Resolving fight winner with fighter name')
+                df['winner_resolved'] = [df['r_fighter'] if x.lower() == 'red' else df['b_fighter'] for x in df['winner']]
 
                 # Add resolved country column with country removed from location
+                logger.info('Resolving location name to split-out country')
                 df['location_resolved'] = [x[0:x.rfind(',')].strip() for x in df['location']]
-                logger.debug(df['location_resolved'])
-
-                # Log some basic stats and summaries of the data
-                logging.info(df.head())
-                logger.debug(df.dtypes)
-                logger.debug(df.info)
-                # logger.debug(df.gender.unique())
-
-                for column in df:
-                    # Suppress describe date deprecation warning
-                    logger.debug(df[column].describe(datetime_is_numeric= True))
-
-                # Convert dataframe to numpy matrix
-                logger.info('Converting to numpy array')
-                self.data = df.to_numpy()
                 
-                if type(self.data) == np.ndarray:
-                    logger.info('Successfully converted to numpy array')
+                # Clean string data
+                logger.info('Converting string columns to lower')
+                df['r_fighter'] = df['r_fighter'].str.lower()
+                df['b_fighter'] = df['b_fighter'].str.lower()
+                df['location_resolved'] = df['location_resolved'].str.lower()
+                df['country'] = df['country'].str.lower()
+                df['winner_resolved'] = df['winner_resolved'].str.lower()
+                df['gender'] = df['gender'].str.lower()
+
+                self.data = df
 
             except Exception as err:
                 logger.error(f'Exception occurred: {err}')
@@ -160,21 +156,26 @@ class OddsAnalyser():
     def _create_plots(self):
         """ Generate plots and CSV files for analysis. """
 
-        logger.info('EXECUTE _create_plots()')
+        logger.info('EXECUTING _create_plots()')
 
-        # Do the both fighters have a similar distribution of odds?
+        # Q1: Do the both fighters have a similar distribution of odds?
+
+        # Convert dataframe to numpy matrix
+        logger.info('Converting data frame to numpy array')
+        arr = self.data.to_numpy()
 
         # Get all row values for r_odds and b_odds
         x = self.data[:, 2]
         y = self.data[:, 3]
 
+        # Plot histogram
         plt.hist(
             [x, y],
             bins= 15,
             color= ('#f04848', '#4878c0')
         )
 
-        # Do the odds change by weight class?
+        # Q2: How do odds vary between top weight classes?
 
         # Get the weight_class array and create boolean masks for each class
         wgt_array = self.data[:, 9]
@@ -226,7 +227,7 @@ class OddsAnalyser():
         axs7.hist(z_1, bins= 25, color= '#f04848')
         axs8.hist(z_2, bins= 25, color= '#4878c0')
 
-        # Do the odds change by gender?
+        # Q3: How do the odds vary by gender?
 
         # Get the gender array and create boolean masks for each gender
         gender_array = self.data[:, 10]
@@ -266,4 +267,4 @@ class OddsAnalyser():
         
         # Plot
         plt.tight_layout()
-        # plt.show()
+        plt.show()
