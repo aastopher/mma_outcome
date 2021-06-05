@@ -11,8 +11,8 @@ class CLILogger:
     def _logging_config(self):
         root = logging.getLogger()
         root.setLevel(logging.DEBUG)
-        if not os.path.exists('../logs'):
-            os.mkdir('../logs')
+        if not os.path.exists('logs'):
+            os.mkdir('logs')
         fh = logging.FileHandler(f'logs/{self.log_name}.log','w')
         fh.setLevel(self.log_lvl)
         formatter = logging.Formatter('%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s', datefmt='%H:%M:%S')
@@ -24,7 +24,7 @@ class CLILogger:
         sh = logging.StreamHandler()
         sh.setLevel(logging.INFO)
         infoLogger.addHandler(sh)
-        
+
     def _cli_config(self):
         parser = argparse.ArgumentParser(description= 'gather and analyze MMA reach and height data', epilog= 'Ready? FIGHT!')
         parser.add_argument('-v', '--verbose', help= 'add logging verbosity', action= 'store_const', dest= 'log_level', const= logging.DEBUG, default= logging.INFO)

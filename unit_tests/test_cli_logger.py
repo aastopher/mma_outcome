@@ -1,5 +1,5 @@
 import unittest, sys, os
-sys.path.append("mma_reach_height/modules/")
+sys.path.append("modules/")
 from cli_logger import *
 
 class TestCLI(unittest.TestCase):
@@ -12,8 +12,8 @@ class TestCLI(unittest.TestCase):
         testLogger2.info('test Class 2')
         testLogger3 = logging.getLogger('Class3')
         testLogger3.info('test Class 3')
-        self.assertTrue(os.path.exists('mma_reach_height/logs/test_cli_logger.log'))
-        os.remove('mma_reach_height/logs/test_cli_logger.log')
+        self.assertTrue(os.path.exists('logs/test_cli_logger.log'))
+        os.remove('logs/test_cli_logger.log')
 
 if __name__ == '__main__':
     unittest.main()

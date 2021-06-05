@@ -1,0 +1,5 @@
+2021-06-04 21:54:12,271 - DataMashup - INFO - Odds data loaded
+2021-06-04 21:54:12,271 - DataMashup - INFO - Fighter data loaded
+2021-06-04 21:54:12,271 - DataMashup - INFO - EXECUTING _merge_data()
+2021-06-04 21:54:12,286 - DataMashup - INFO - Merged data on r_fighter and b_fighter keys
+2021-06-04 21:54:12,346 - DataMashup - INFO - Exported master data to CSV

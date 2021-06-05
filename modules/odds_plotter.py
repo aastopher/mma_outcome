@@ -1,8 +1,9 @@
-import csv, logging
+import csv, logging, sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from modules.cli_logger import CLILogger
+sys.path.append("modules/")
+from cli_logger import CLILogger
 
 # Instantiate cli args
 cli = CLILogger('odds_plotter', ['Plotter'])
@@ -76,18 +77,18 @@ class Plotter():
         try:
             plotterLogger.info('Writing odds by weight class data')
             weight_df.to_csv(
-                path_or_buf= '../data_output/weight_data.csv', 
+                path_or_buf= 'data_output/weight_data.csv',
                 header= ['r_odds', 'b_odds', 'weight_class'],
                 index_label= 'index',
                 quoting= csv.QUOTE_NONNUMERIC
             )
         except Exception as err:
             plotterLogger.error(err)
-        
+
         # Setup plotting
-        fig_2.suptitle('Distribution of Odds by Top Weight Class', 
+        fig_2.suptitle('Distribution of Odds by Top Weight Class',
             fontweight= self.style['title']['weight'],
-            size= self.style['title']['size'], 
+            size= self.style['title']['size'],
             color= self.style['title']['color'])
         fig_2.set_facecolor(self.style['face_color_primary'])
 
@@ -154,7 +155,7 @@ class Plotter():
         try:
             plotterLogger.info('Writing odds by gender data')
             gender_df.to_csv(
-                path_or_buf= '../data_output/gender_data.csv', 
+                path_or_buf= 'data_output/gender_data.csv',
                 header= ['r_odds', 'b_odds', 'gender'],
                 index_label= 'index',
                 quoting= csv.QUOTE_NONNUMERIC
@@ -163,8 +164,8 @@ class Plotter():
             plotterLogger.error(err)
 
         # Setup plotting
-        fig_3.suptitle('Odds by Gender: Red vs. Blue', 
-            fontweight= self.style['title']['weight'], 
+        fig_3.suptitle('Odds by Gender: Red vs. Blue',
+            fontweight= self.style['title']['weight'],
             size= self.style['title']['size'],
             color= self.style['title']['color'])
         fig_3.set_facecolor(self.style['face_color_primary'])
@@ -190,7 +191,7 @@ class Plotter():
             r[1].spines['right'].set_color(self.style['spline_color'])
             r[0].tick_params(colors= self.style['tick_color'])
             r[1].tick_params(colors= self.style['tick_color'])
-        
+
         plotterLogger.info('Plotting basic histogram of odds by gender')
         ax_3[0, 0].set_title('Female Red', fontdict= self.style['label'])
         ax_3[0, 1].set_title('Female Blue', fontdict= self.style['label'])
@@ -200,9 +201,10 @@ class Plotter():
         ax_3[1, 1].set_title('Male Blue', fontdict= self.style['label'])
         ax_3[1, 0].hist(b_1, bins= 25, color= self.style['red'])
         ax_3[1, 1].hist(b_2, bins= 25, color= self.style['blue'])
-        
+
         # Plot
         fig_1.tight_layout()
         fig_2.tight_layout()
         fig_3.tight_layout()
-        plt.show()
+        plt.savefig(f'data_output/odds_by_gender_plot')
+        # plt.show()

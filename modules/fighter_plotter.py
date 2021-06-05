@@ -4,23 +4,18 @@ import logging, csv, os, sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-# sys.path.append("mma_reach_height/modules/")
-from modules.cli_logger import CLILogger
+sys.path.append("modules/")
+from cli_logger import CLILogger
 
 #instantiate cli args and class loggers using cli_logger module
-CLILogger('plotter',['Plotter'])
+CLILogger('fighter_plotter',['Plotter'])
 plotterLogger = logging.getLogger('Plotter')
 
 class Plotter:
-    def __init__(self, styles, data= None):
+    def __init__(self, styles, data=None):
         plotterLogger.debug(f'Plotter instantiated')
         self.data = data
         self.style = styles
-        # self._win_plot('reach')
-        # self._win_plot('height')
-        # self._win_type_plot('reach')
-        # self._win_type_plot('height')
-
     def _win_plot(self, reach_height):
         plotterLogger.info(f'plotting {reach_height} wins')
         if reach_height == 'reach':
@@ -59,33 +54,32 @@ class Plotter:
                   loc ="upper left",
                   bbox_to_anchor =(1, 0, 0.5, 1))
         plt.setp(autotexts, size = self.style['label']['size'], color= 'white', weight ="bold")
-
-        # plt.savefig(f'mma_reach_height/data_output/{reach_height}_pie')
         plt.savefig(f'data_output/{reach_height}_pie')
-        plt.show()
-
-    # #NOT WORKING
-    # def _win_type_plot(self, reach_height):
-    #     plotterLogger.info(f'plotting {reach_height} win types')
-    #     if reach_height == 'reach':
-    #         print('reach')
-    #         wins = self.data[f'{reach_height}_win'].tolist()
-    #     if reach_height == 'height':
-    #         wins = self.data[f'{reach_height}_win'].tolist()
-    #     win_types = set(self.data['win_type'].tolist())
-    #     # print(wins)
-    #     wins = self.data[f'{reach_height}_win'].tolist().count(True)
-    #     plt.style.use('fast')
-    #     plt.figure(figsize=(10,10))
-    #     x_pos = [i*2 for i, _ in enumerate(win_types)]
-    #     plt.bar(x_pos, wins, width=1)
-    #     plt.xlabel('Win Types')
-    #     plt.ylabel(f'{reach_height} Wins')
-    #     plt.title(f"{reach_height} Wins Per Win Type")
-    #     plt.xticks(x_pos, win_types, rotation=45)
-    #     plt.tight_layout()
-    #     # plt.savefig(f'mma_reach_height/data_output/{reach_height}_wins_per_win_type')
-    #     plt.savefig(f'data_output/{reach_height}_wins_per_win_type')
-
-    #     data = set(self.data['win_type'].tolist())
-    #     plt.show()
+        # plt.show()
+    def _win_type_plot(self, reach_height):
+        plotterLogger.info(f'plotting {reach_height} win types')
+        print(self.r_win_type_wins.loc[0])
+        print(self.r_win_type_wins.loc[0].tolist())
+        if reach_height == 'reach':
+            wins = self.r_win_type_wins.loc[0].tolist()
+        if reach_height == 'height':
+            wins = self.h_win_type_wins.loc[0].tolist()
+        plt.style.use('fast')
+        plt.figure(figsize=(10,10))
+        x_pos = [i*2 for i, _ in enumerate(self.win_types)]
+        plt.bar(x_pos, wins, width=1)
+        plt.xlabel('Win Types')
+        plt.ylabel(f'{reach_height} Wins')
+        plt.title(f"{reach_height} Wins Per Win Type")
+        plt.xticks(x_pos, self.win_types, rotation=45)
+        plt.tight_layout()
+        plt.savefig(f'data_output/{reach_height}_wins_per_win_type')
+        # plt.show()
+    def _win_type_wins(self, reach_height):
+        win_type_wins = pd.DataFrame(columns = set(self.data['win_type'].tolist()))
+        for type in self.win_types:
+            type_indexs = self.data.index[self.data['win_type'] == type].tolist()
+            num_wins = [self.data.iloc[i][f'{reach_height}_win'] for i in type_indexs if self.data.iloc[i][f'{reach_height}_win'] == True and self.data.iloc[i]['win_type'] == type]
+            self.data.index[self.data[f'{reach_height}_win'] == True].tolist()
+            win_type_wins[type] = [np.count_nonzero(num_wins)]
+        return win_type_wins

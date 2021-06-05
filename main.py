@@ -11,6 +11,7 @@ from modules.odds_data_pipe import DataLoader
 from modules.fighter_data_pipe import CalculatedData
 from modules.odds_plotter import Plotter as OddsPlotter
 from modules.fighter_plotter import Plotter as FighterPlotter
+from modules.cli_logger import CLILogger
 
 # Define styling
 DARK_STYLE = {
@@ -43,13 +44,16 @@ parser.add_argument('-a', '--analyze', help= 'explore final analysis plots', act
 parser.add_argument('-o', '--output', help= 'define a prefix for all export data', action= 'store_const', const= 'output_prefix')
 args = parser.parse_args()
 
+# cli = CLILogger('analyser', ['DataMashup'])
+# logger = logging.getLogger('DataMashup')
+
 # Create a custom logger
-logger = logging.getLogger('mma_odds')
+logger = logging.getLogger('DataMashup')
 logger.setLevel(logging.DEBUG)
 
 # Create handlers
 c_handler = logging.StreamHandler()
-f_handler = logging.FileHandler('mma_odds.log', )
+f_handler = logging.FileHandler('logs/analyser.log', 'w')
 c_handler.setLevel(logging.ERROR)
 f_handler.setLevel(args.log_level) # swap between INFO and DEBUG to disable/enable debug
 
@@ -96,7 +100,7 @@ class DataMashup():
 
         # Load data into class attribute and write combined data to file
         self.aggregate_data = master
-        master.to_csv('merged_master_data.csv', sep= ',')
+        master.to_csv('data_output/merged_master_data.csv', sep= ',')
         logger.info('Exported master data to CSV')
 
     def _scatter_odds_vs_reach(self, style, plot):
@@ -161,7 +165,7 @@ class DataMashup():
             fig_1.set_size_inches(13, 10)
             fig_2, ax_2 = plt.subplots()
             fig_2.set_size_inches(13, 10)
-            
+
             # Setup titles and labels with styles
             ax_1[0].set_title('Relationship Between Vegas Odds and (Red) Fighter Reach vs. (Blue) Fighter Reach', fontdict= style['title'])
             ax_1[0].set_xlabel('Fighter Reach (Inches)', fontdict= style['label'])
@@ -222,7 +226,8 @@ class DataMashup():
             ax_2.plot(high.index, hm * high.index + hb, color= style['red'], linestyle= '--')
             ax_2.plot(low.index, lm * low.index + lb, color= style['blue'], linestyle= '--')
 
-            plt.show()
+            plt.savefig(f'data_output/odds_reach')
+            # plt.show()
 
 def main():
     # Get both datasets

@@ -1,0 +1,7 @@
+21:54:10,632 DataLoader INFO EXECUTING _load_data()
+21:54:10,632 DataLoader INFO Reading CSV into Data Frame
+21:54:10,653 DataLoader INFO Dropping NaN rows
+21:54:10,659 DataLoader INFO Renaming column headings
+21:54:10,659 DataLoader INFO Resolving fight winner with fighter name
+21:54:10,702 DataLoader INFO Resolving location name to split-out country
+21:54:10,707 DataLoader INFO Converting string columns to lower

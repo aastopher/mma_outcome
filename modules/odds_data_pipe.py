@@ -1,10 +1,11 @@
 import logging, os, sys
 import pandas as pd
-from modules.cli_logger import CLILogger
+sys.path.append("modules/")
+from cli_logger import CLILogger
 
 # Instantiate cli args
 cli = CLILogger('odds_data_pipe', ['DataLoader'])
-rawDataLogger = logging.getLogger('RawData')
+rawDataLogger = logging.getLogger('DataLoader')
 
 IN_DATAFILE_PATH = 'data/raw_odds_details.csv'
 
@@ -60,7 +61,7 @@ class DataLoader:
             # Add resolved country column with country removed from location
             rawDataLogger.info('Resolving location name to split-out country')
             df['location_resolved'] = [x[0:x.rfind(',')].strip() for x in df['location']]
-            
+
             # Clean string data
             rawDataLogger.info('Converting string columns to lower')
             df['r_fighter'] = df['r_fighter'].str.lower()
