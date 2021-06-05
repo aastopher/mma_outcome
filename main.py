@@ -246,6 +246,8 @@ def main():
     odds_plotter._create_plots()
     fighter_plotter._win_plot('reach')
     fighter_plotter._win_plot('height')
+    fighter_plotter._win_type_plot('reach')
+    fighter_plotter._win_type_plot('height')
 
     # Load odds data and fight data
     analyser = DataMashup()

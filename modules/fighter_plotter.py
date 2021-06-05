@@ -10,6 +10,9 @@ class Plotter:
         plotterLogger.debug(f'Plotter instantiated')
         self.data = data
         self.style = styles
+        self.win_types = set(self.data['win_type'].tolist())
+        self.r_win_type_wins = self._win_type_wins('reach')
+        self.h_win_type_wins = self._win_type_wins('height')
     def _win_plot(self, reach_height):
         plotterLogger.info(f'plotting {reach_height} wins')
         if reach_height == 'reach':
@@ -52,8 +55,6 @@ class Plotter:
         # plt.show()
     def _win_type_plot(self, reach_height):
         plotterLogger.info(f'plotting {reach_height} win types')
-        print(self.r_win_type_wins.loc[0])
-        print(self.r_win_type_wins.loc[0].tolist())
         if reach_height == 'reach':
             wins = self.r_win_type_wins.loc[0].tolist()
         if reach_height == 'height':
