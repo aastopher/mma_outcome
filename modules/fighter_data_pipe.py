@@ -1,10 +1,5 @@
 ### MODULE: responsible for all data handling ###
-
-import logging, csv, os, sys
-import pandas as pd
-import numpy as np
-sys.path.append("modules/")
-from cli_logger import CLILogger
+from modules.setup import *
 
 #instantiate cli args and class loggers using cli_logger module
 cli = CLILogger('fighter_data_pipe',['RawData','ProcessedData','CalculatedData'])

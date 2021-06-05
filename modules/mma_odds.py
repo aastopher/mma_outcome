@@ -35,7 +35,7 @@ if __name__ == '__main__':
 # DATASET_URL = 'https://www.kaggle.com/mdabbert/ufc-fights-2010-2020-with-betting-odds/download'
 # GET_OUTFILE = 'data.csv'
 # # Setup odds record namedtuple
-# OddsRecord = namedtuple('OddsRecord', 
+# OddsRecord = namedtuple('OddsRecord',
 #     [
 #         'r_fighter',
 #         'b_fighter',
@@ -85,7 +85,7 @@ if __name__ == '__main__':
 #         return iter(self.data)
 
 #     def _get_data(self):
-#         """ Downloads data and writes it to disk. 
+#         """ Downloads data and writes it to disk.
 #             Arguments
 #             ---------
 #             None
@@ -162,7 +162,7 @@ if __name__ == '__main__':
 #                 # Add resolved country column with country removed from location
 #                 logger.info('Resolving location name to split-out country')
 #                 df['location_resolved'] = [x[0:x.rfind(',')].strip() for x in df['location']]
-                
+
 #                 # Clean string data
 #                 logger.info('Converting string columns to lower')
 #                 df['r_fighter'] = df['r_fighter'].str.lower()
@@ -222,18 +222,18 @@ if __name__ == '__main__':
 #         weight_df = pd.DataFrame(self.data[:, [2, 3, 9]])
 #         try:
 #             weight_df.to_csv(
-#                 path_or_buf= 'weight_data.csv', 
+#                 path_or_buf= 'weight_data.csv',
 #                 header= ['r_odds', 'b_odds', 'weight_class'],
 #                 index_label= 'index',
 #                 quoting= csv.QUOTE_NONNUMERIC
 #             )
 #         except Exception as err:
 #             logger.error(err)
-        
+
 #         # Setup plotting
 #         fig, ((axs1, axs2), (axs3, axs4), (axs5, axs6), (axs7, axs8)) = plt.subplots(4, 2)
 #         fig.suptitle('Odds by Weightclass: Red vs. Blue')
-        
+
 #         axs1.set_title('Lightweight Red')
 #         axs2.set_title('Lightweight Blue')
 #         axs1.hist(w_1, bins= 25, color= '#f04848')
@@ -268,7 +268,7 @@ if __name__ == '__main__':
 #         gender_df = pd.DataFrame(self.data[:, [2, 3, 10]])
 #         try:
 #             gender_df.to_csv(
-#                 path_or_buf= 'gender_data.csv', 
+#                 path_or_buf= 'gender_data.csv',
 #                 header= ['r_odds', 'b_odds', 'gender'],
 #                 index_label= 'index',
 #                 quoting= csv.QUOTE_NONNUMERIC
@@ -279,7 +279,7 @@ if __name__ == '__main__':
 #         # Setup plotting
 #         fig, ((axs1, axs2), (axs3, axs4)) = plt.subplots(2, 2)
 #         fig.suptitle('Odds by Gender: Red vs. Blue')
-        
+
 #         axs1.set_title('Female Red')
 #         axs2.set_title('Female Blue')
 #         axs1.hist(a_1, bins= 25, color= '#f04848')
@@ -288,7 +288,7 @@ if __name__ == '__main__':
 #         axs4.set_title('Male Blue')
 #         axs3.hist(b_1, bins= 25, color= '#f04848')
 #         axs4.hist(b_2, bins= 25, color= '#4878c0')
-        
+
 #         # Plot
 #         plt.tight_layout()
 #         plt.show()

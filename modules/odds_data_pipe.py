@@ -1,7 +1,4 @@
-import logging, os, sys
-import pandas as pd
-sys.path.append("modules/")
-from cli_logger import CLILogger
+from modules.setup import *
 
 # Instantiate cli args
 cli = CLILogger('odds_data_pipe', ['DataLoader'])

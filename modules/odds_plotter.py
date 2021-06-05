@@ -1,9 +1,4 @@
-import csv, logging, sys
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-sys.path.append("modules/")
-from cli_logger import CLILogger
+from modules.setup import *
 
 # Instantiate cli args
 cli = CLILogger('odds_plotter', ['Plotter'])

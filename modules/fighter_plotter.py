@@ -1,11 +1,5 @@
 ### MODULE: responsible for all plotting functions ###
-
-import logging, csv, os, sys
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-sys.path.append("modules/")
-from cli_logger import CLILogger
+from modules.setup import *
 
 #instantiate cli args and class loggers using cli_logger module
 CLILogger('fighter_plotter',['Plotter'])
