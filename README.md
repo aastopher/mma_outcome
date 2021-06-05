@@ -1,7 +1,8 @@
 # comp-3006-final
 
-# TO-DO
+## TO-DO
   * add more test cases?
+  * fix warnings?
   * add test cases for odds modules
   * add more verbose logging
   * prune comments
