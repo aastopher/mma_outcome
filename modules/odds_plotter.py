@@ -7,11 +7,17 @@ cli = CLILogger('odds_plotter', ['Plotter'])
 plotterLogger = logging.getLogger('Plotter')
 
 # Set prefix correctly if empty
-if cli.args.command == None or cli.args.output[0] == '':
+if cli.args.command == None or cli.args.prefix[0] == '':
     prefix = ''
 else:
-    plotterLogger.debug(f'Prefix \'{prefix}\' added to plot output files')
-    prefix = cli.args.output[0] + '_'
+    prefix = cli.args.prefix[0] + '_'
+    plotterLogger.debug(f'Prefix \'{prefix}\' added to output files')
+
+# Set output correctly if empty
+if cli.args.command == None or cli.args.output == False:
+    output = False
+else:
+    output = cli.args.output
 
 class Plotter():
     def __init__(self, styles, data):
@@ -79,17 +85,18 @@ class Plotter():
         z_2 = arr[hw_mask, 3]
 
         # Setup file output
-        weight_df = pd.DataFrame(arr[:, [2, 3, 9]])
-        try:
-            plotterLogger.info('Writing odds by weight class data')
-            weight_df.to_csv(
-                path_or_buf= 'data_output/weight_data.csv',
-                header= ['r_odds', 'b_odds', 'weight_class'],
-                index_label= 'index',
-                quoting= csv.QUOTE_NONNUMERIC
-            )
-        except Exception as err:
-            plotterLogger.error(err)
+        if output:
+            weight_df = pd.DataFrame(arr[:, [2, 3, 9]])
+            try:
+                plotterLogger.info('Writing optional: odds by weight class data')
+                weight_df.to_csv(
+                    path_or_buf= f'data_output/{prefix}weight_data.csv',
+                    header= ['r_odds', 'b_odds', 'weight_class'],
+                    index_label= 'index',
+                    quoting= csv.QUOTE_NONNUMERIC
+                )
+            except Exception as err:
+                plotterLogger.error(err)
 
         # Setup plotting
         fig_2.suptitle('Distribution of Odds by Top Weight Class',
@@ -159,17 +166,18 @@ class Plotter():
         b_2 = arr[m_mask, 3]
 
         # Setup file output
-        gender_df = pd.DataFrame(arr[:, [2, 3, 10]])
-        try:
-            plotterLogger.info('Writing odds by gender data')
-            gender_df.to_csv(
-                path_or_buf= 'data_output/gender_data.csv',
-                header= ['r_odds', 'b_odds', 'gender'],
-                index_label= 'index',
-                quoting= csv.QUOTE_NONNUMERIC
-            )
-        except Exception as err:
-            plotterLogger.error(err)
+        if output:
+            gender_df = pd.DataFrame(arr[:, [2, 3, 10]])
+            try:
+                plotterLogger.info('Writing optional: odds by gender data')
+                gender_df.to_csv(
+                    path_or_buf= f'data_output/{prefix}gender_data.csv',
+                    header= ['r_odds', 'b_odds', 'gender'],
+                    index_label= 'index',
+                    quoting= csv.QUOTE_NONNUMERIC
+                )
+            except Exception as err:
+                plotterLogger.error(err)
 
         # Setup plotting
         fig_3.suptitle('Odds by Gender: Red vs. Blue',

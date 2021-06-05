@@ -8,11 +8,11 @@ cli = CLILogger('fighter_plotter',['Plotter'])
 plotterLogger = logging.getLogger('Plotter')
 
 # set prefix correctly if empty
-if cli.args.command == None or cli.args.output[0] == '':
+if cli.args.command == None or cli.args.prefix[0] == '':
     prefix = ''
 else:
-    plotterLogger.debug(f'Prefix \'{prefix}\' added to plot output files')
-    prefix = cli.args.output[0] + '_'
+    prefix = cli.args.prefix[0] + '_'
+    plotterLogger.debug(f'Prefix \'{prefix}\' added to output files')
 
 class Plotter:
     def __init__(self, styles, data=None):

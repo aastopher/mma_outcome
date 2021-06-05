@@ -40,11 +40,17 @@ cli = CLILogger('analyzer',['DataMashup'])
 logger = logging.getLogger('DataMashup')
 
 # Set prefix correctly if empty
-if cli.args.command == None or cli.args.output[0] == '':
+if cli.args.command == None or cli.args.prefix[0] == '':
     prefix = ''
 else:
-    logger.debug(f'Prefix \'{prefix}\' added to plot output files')
-    prefix = cli.args.output[0] + '_'
+    prefix = cli.args.prefix[0] + '_'
+    logger.debug(f'Prefix \'{prefix}\' added to output files')
+
+# Set output correctly if empty
+if cli.args.command == None or cli.args.output == False:
+    output = False
+else:
+    output = cli.args.output
 
 class DataMashup():
     def __init__(self):
@@ -79,8 +85,9 @@ class DataMashup():
 
         # Load data into class attribute and write combined data to file
         self.aggregate_data = master
-        master.to_csv('data_output/merged_master_data.csv', sep= ',')
-        logger.info('Exported master data to CSV')
+        if output:
+            master.to_csv(f'data_output/{prefix}merged_master_data.csv', sep= ',')
+            logger.info('Exported master data to CSV')
 
     def _scatter_odds_vs_reach(self, style, plot):
         """ Plots a scatter plot of fighter reach vs the vegas odds.

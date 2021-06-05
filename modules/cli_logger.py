@@ -30,8 +30,9 @@ class CLILogger:
     def _cli_config(self):
         def _add_options(parser):
             parser.add_argument('-v', '--verbose', help= 'add logging verbosity', action= 'store_const', dest= 'log_level', const= logging.DEBUG, default= logging.INFO)
+            parser.add_argument('-o', '--output', help= 'output optional csv data', action= 'store_true', dest= 'output')
+            parser.add_argument('-p', '--prefix', help= 'define a prefix for all export data', dest= 'prefix', nargs=1, default=[''])
             parser.add_argument('-d', '--dark-mode', help= 'add dark mode to plotting', action= 'store_true', dest= 'dark_mode')
-            parser.add_argument('-o', '--output', help= 'define a prefix for all export data', dest= 'output', nargs=1, default=[''])
 
         parser = argparse.ArgumentParser(description= f'gather and analyze MMA fight and odds data', epilog= 'Ready? FIGHT!')
         subparser = parser.add_subparsers(dest='command')

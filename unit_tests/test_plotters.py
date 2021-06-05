@@ -46,9 +46,8 @@ class TestPlotter(unittest.TestCase):
         self.assertTrue(len(plot.data['gender'].tolist()) > 0)
         self.assertTrue(len(plot.data['winner_resolved'].tolist()) > 0)
         self.assertTrue(len(plot.data['location_resolved'].tolist()) > 0)
-        self.assertTrue(os.path.exists('data_output/gender_data.csv'))
+        self.assertTrue(not os.path.exists('data_output/gender_data.csv'))
         self.assertTrue(os.path.exists('data_output/odds_by_gender_plot.png'))
-        os.remove('data_output/gender_data.csv')
         os.remove('data_output/odds_by_gender_plot.png')
 
 
