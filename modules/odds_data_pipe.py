@@ -1,11 +1,12 @@
-from modules.setup import *
+import sys
+sys.path.append("modules/")
+from setup import *
 
 # Instantiate cli args
 cli = CLILogger('odds_data_pipe', ['DataLoader'])
 rawDataLogger = logging.getLogger('DataLoader')
 
 IN_DATAFILE_PATH = 'data/raw_odds_details.csv'
-
 class DataLoader:
     def __init__(self):
         self.data = None

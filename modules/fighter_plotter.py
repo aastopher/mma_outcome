@@ -1,9 +1,17 @@
 ### MODULE: responsible for all plotting functions ###
-from modules.setup import *
+import sys
+sys.path.append("modules/")
+from setup import *
 
 #instantiate cli args and class loggers using cli_logger module
-CLILogger('fighter_plotter',['Plotter'])
+cli = CLILogger('fighter_plotter',['Plotter'])
 plotterLogger = logging.getLogger('Plotter')
+
+# Set prefix correctly if empty
+if cli.args.command == None or cli.args.output[0] == '':
+    prefix = ''
+else:
+    prefix = cli.args.output[0] + '_'
 
 class Plotter:
     def __init__(self, styles, data=None):
@@ -13,6 +21,11 @@ class Plotter:
         self.win_types = set(self.data['win_type'].tolist())
         self.r_win_type_wins = self._win_type_wins('reach')
         self.h_win_type_wins = self._win_type_wins('height')
+    def _create_plots(self):
+        self._win_plot('reach')
+        self._win_plot('height')
+        self._win_type_plot('reach')
+        self._win_type_plot('height')
     def _win_plot(self, reach_height):
         plotterLogger.info(f'plotting {reach_height} wins')
         if reach_height == 'reach':
@@ -51,7 +64,7 @@ class Plotter:
                   loc ="upper left",
                   bbox_to_anchor =(1, 0, 0.5, 1))
         plt.setp(autotexts, size = self.style['label']['size'], color= 'white', weight ="bold")
-        plt.savefig(f'data_output/{reach_height}_pie')
+        plt.savefig(f'data_output/{prefix}{reach_height}_pie')
         # plt.show()
     def _win_type_plot(self, reach_height):
         plotterLogger.info(f'plotting {reach_height} win types')
@@ -60,6 +73,7 @@ class Plotter:
         if reach_height == 'height':
             wins = self.h_win_type_wins.loc[0].tolist()
         fig, ax = plt.subplots(figsize =(10, 10))
+        ax.patch.set_facecolor(self.style['face_color_secondary'])
         fig.set_facecolor(self.style['face_color_primary'])
         ax.grid(color= self.style['grid_color'], linestyle= '--', linewidth=0.7)
         ax.tick_params(colors= self.style['tick_color'])
@@ -72,7 +86,7 @@ class Plotter:
         plt.xticks(x_pos, self.win_types, rotation=45)
         plt.tight_layout()
 
-        plt.savefig(f'data_output/{reach_height}_wins_per_win_type')
+        plt.savefig(f'data_output/{prefix}{reach_height}_wins_per_win_type')
         # plt.show()
     def _win_type_wins(self, reach_height):
         win_type_wins = pd.DataFrame(columns = set(self.data['win_type'].tolist()))

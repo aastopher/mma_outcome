@@ -35,37 +35,15 @@ LIGHT_STYLE = {
     'red' : '#e5383b',
     'blue' : '#5469c4'}
 
-# Handle arguments
-parser = argparse.ArgumentParser(description= 'run an analysis of MMA fighter and odds data', epilog= 'Ready? FIGHT!')
-parser.add_argument('-v', '--verbose', help= 'add logging verbosity', action= 'store_const', dest= 'log_level', const= logging.DEBUG, default= logging.INFO)
-parser.add_argument('-d', '--dark-mode', help= 'add dark mode to plotting', action= 'store_true', dest= 'dark_mode')
-parser.add_argument('-e', '--explore', help= 'explore initial dataset plots', action= 'store_true', dest= 'explore')
-parser.add_argument('-a', '--analyze', help= 'explore final analysis plots', action= 'store_true', dest= 'analyze')
-parser.add_argument('-o', '--output', help= 'define a prefix for all export data', action= 'store_const', const= 'output_prefix')
-args = parser.parse_args()
-
-# cli = CLILogger('analyser', ['DataMashup'])
-# logger = logging.getLogger('DataMashup')
-
-# Create a custom logger
+#instantiate main logger and cli
+cli = CLILogger('analyser',['DataMashup'])
 logger = logging.getLogger('DataMashup')
-logger.setLevel(logging.DEBUG)
 
-# Create handlers
-c_handler = logging.StreamHandler()
-f_handler = logging.FileHandler('logs/analyser.log', 'w')
-c_handler.setLevel(logging.ERROR)
-f_handler.setLevel(args.log_level) # swap between INFO and DEBUG to disable/enable debug
-
-# Create formatters and add it to handlers
-c_format = logging.Formatter('%(name)s - %(levelname)s - %(message)s')
-f_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-c_handler.setFormatter(c_format)
-f_handler.setFormatter(f_format)
-
-# Add handlers to the logger
-logger.addHandler(c_handler)
-logger.addHandler(f_handler)
+# Set prefix correctly if empty
+if cli.args.command == None or cli.args.output[0] == '':
+    prefix = ''
+else:
+    prefix = cli.args.output[0] + '_'
 
 class DataMashup():
     def __init__(self):
@@ -93,7 +71,6 @@ class DataMashup():
         # Attempt merge on fighter data keys
         try:
             master = self.odds_data.merge(self.fighter_data, on= ['r_fighter', 'b_fighter'])
-            # master.set_index([0], 'index')
             logger.info('Merged data on r_fighter and b_fighter keys')
         except Exception as err:
             logger.error(f'Error merging dataframes: {err}')
@@ -226,42 +203,61 @@ class DataMashup():
             ax_2.plot(high.index, hm * high.index + hb, color= style['red'], linestyle= '--')
             ax_2.plot(low.index, lm * low.index + lb, color= style['blue'], linestyle= '--')
 
-            plt.savefig(f'data_output/odds_reach')
+            plt.savefig(f'data_output/{prefix}odds_reach')
             # plt.show()
 
 def main():
-    # Get both datasets
-    odds_data = DataLoader()
-    fighter_data = CalculatedData()
+    def _load_data_sets():
+        # Get both datasets
+        odds_data = DataLoader()
+        fighter_data = CalculatedData()
+        return odds_data,fighter_data
 
-    # Determine styling
-    if args.dark_mode:
-        odds_plotter = OddsPlotter(DARK_STYLE, odds_data.data)
-        fighter_plotter = FighterPlotter(DARK_STYLE, fighter_data.data)
-    else:
-        odds_plotter = OddsPlotter(LIGHT_STYLE, odds_data.data)
-        fighter_plotter = FighterPlotter(LIGHT_STYLE, fighter_data.data)
+    def _load_analyser():
+        odds_data,fighter_data = _load_data_sets()
+        # Load odds data and fight data
+        analyser = DataMashup()
+        analyser._import_data(odds_data.data, 'odds')
+        analyser._import_data(fighter_data.data, 'fighter')
 
-    # Do individual plots
-    odds_plotter._create_plots()
-    fighter_plotter._win_plot('reach')
-    fighter_plotter._win_plot('height')
-    fighter_plotter._win_type_plot('reach')
-    fighter_plotter._win_type_plot('height')
+        # Combine dataframes
+        analyser._merge_data()
 
-    # Load odds data and fight data
-    analyser = DataMashup()
-    analyser._import_data(odds_data.data, 'odds')
-    analyser._import_data(fighter_data.data, 'fighter')
+        return odds_data,fighter_data,analyser
 
-    # Combine dataframes
-    analyser._merge_data()
+    # Handle 'explore' command
+    if cli.args.command == 'explore':
+        odds_data,fighter_data = _load_data_sets()
+        if cli.args.dark_mode:
+            odds_plotter = OddsPlotter(DARK_STYLE, odds_data.data)
+            fighter_plotter = FighterPlotter(DARK_STYLE, fighter_data.data)
+        else:
+            odds_plotter = OddsPlotter(LIGHT_STYLE, odds_data.data)
+            fighter_plotter = FighterPlotter(LIGHT_STYLE, fighter_data.data)
+        odds_plotter._create_plots()
+        fighter_plotter._create_plots()
 
-    # Analysis: Do the Vegas odds follow the fighter with better reach?
-    if args.dark_mode:
-        analyser._scatter_odds_vs_reach(DARK_STYLE, True)
-    else:
-        analyser._scatter_odds_vs_reach(DARK_STYLE, True)
+    # Handle 'analyze' command
+    if cli.args.command == 'analyze':
+        odds_data,fighter_data,analyser = _load_analyser()
+        if cli.args.dark_mode:
+            analyser._scatter_odds_vs_reach(DARK_STYLE, True)
+        else:
+            analyser._scatter_odds_vs_reach(LIGHT_STYLE, True)
+
+    # Handle 'deep' command
+    if cli.args.command == 'deep':
+        odds_data,fighter_data,analyser = _load_analyser()
+        if cli.args.dark_mode:
+            odds_plotter = OddsPlotter(DARK_STYLE, odds_data.data)
+            fighter_plotter = FighterPlotter(DARK_STYLE, fighter_data.data)
+            analyser._scatter_odds_vs_reach(DARK_STYLE, True)
+        else:
+            odds_plotter = OddsPlotter(LIGHT_STYLE, odds_data.data)
+            fighter_plotter = FighterPlotter(LIGHT_STYLE, fighter_data.data)
+            analyser._scatter_odds_vs_reach(LIGHT_STYLE, True)
+        odds_plotter._create_plots()
+        fighter_plotter._create_plots()
 
 if __name__ == '__main__':
     main()

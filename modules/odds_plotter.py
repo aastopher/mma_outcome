@@ -1,8 +1,16 @@
-from modules.setup import *
+import sys
+sys.path.append("modules/")
+from setup import *
 
 # Instantiate cli args
 cli = CLILogger('odds_plotter', ['Plotter'])
 plotterLogger = logging.getLogger('Plotter')
+
+# Set prefix correctly if empty
+if cli.args.command == None or cli.args.output[0] == '':
+    prefix = ''
+else:
+    prefix = cli.args.output[0] + '_'
 
 class Plotter():
     def __init__(self, styles, data):
@@ -201,5 +209,5 @@ class Plotter():
         fig_1.tight_layout()
         fig_2.tight_layout()
         fig_3.tight_layout()
-        plt.savefig(f'data_output/odds_by_gender_plot')
+        plt.savefig(f'data_output/{prefix}odds_by_gender_plot')
         # plt.show()

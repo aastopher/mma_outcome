@@ -1,5 +1,7 @@
 ### MODULE: responsible for all data handling ###
-from modules.setup import *
+import sys
+sys.path.append("modules/")
+from setup import *
 
 #instantiate cli args and class loggers using cli_logger module
 cli = CLILogger('fighter_data_pipe',['RawData','ProcessedData','CalculatedData'])
@@ -8,8 +10,15 @@ processedDataLogger = logging.getLogger('ProcessedData')
 calculatedDataLogger = logging.getLogger('CalculatedData')
 infoLogger = logging.getLogger('console')
 
+# Set prefix correctly if empty
+if cli.args.command == None or cli.args.output[0] == '':
+    prefix = ''
+else:
+    prefix = cli.args.output[0] + '_'
+
 #instantiate static vars
 MONTH_NUMS = {'january':'01','february':'02','march':'03','april':'04','may':'05','june':'06','july':'07','august':'08','september':'09','october':'10','november':'11','december':'12'}
+
 
 class RawData:
     def __init__(self):
@@ -82,12 +91,12 @@ class ProcessedData:
         self._pre_proc_data()
         self._reach__outcome()
         self._height_outcome()
-        if os.path.exists('data/raw_fighter_details.csv') and os.path.exists('mma_reach_height/data/raw_total_fight_data.csv') and not os.path.exists('data_output/processed_data.csv'):
+        if os.path.exists('data/raw_fighter_details.csv') and os.path.exists('data/raw_total_fight_data.csv') and not os.path.exists('data_output/processed_data.csv'):
             if not os.path.exists('data_output'):
                 processedDataLogger.info('creating data_output directory')
                 os.mkdir('data_output')
             processedDataLogger.debug('writing \'proccessed_data.csv\'')
-            self.data.to_csv('data_output/processed_data.csv')
+            self.data.to_csv(f'data_output/processed_data.csv')
     def _pre_proc_data(self):
         processedDataLogger.info('pre-processing data for generated results')
         r_reach,r_height = [],[]
