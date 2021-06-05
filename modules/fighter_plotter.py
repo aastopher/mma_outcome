@@ -59,15 +59,19 @@ class Plotter:
             wins = self.r_win_type_wins.loc[0].tolist()
         if reach_height == 'height':
             wins = self.h_win_type_wins.loc[0].tolist()
-        plt.style.use('fast')
-        plt.figure(figsize=(10,10))
+        fig, ax = plt.subplots(figsize =(10, 10))
+        fig.set_facecolor(self.style['face_color_primary'])
+        ax.grid(color= self.style['grid_color'], linestyle= '--', linewidth=0.7)
+        ax.tick_params(colors= self.style['tick_color'])
+
         x_pos = [i*2 for i, _ in enumerate(self.win_types)]
-        plt.bar(x_pos, wins, width=1)
+        plt.bar(x_pos, wins, width=1,color=self.style['blue'])
         plt.xlabel('Win Types')
-        plt.ylabel(f'{reach_height} Wins')
-        plt.title(f"{reach_height} Wins Per Win Type")
+        plt.ylabel(f'{reach_height.capitalize()} Wins')
+        plt.title(f"{reach_height.capitalize()} Wins Per Win Type", fontdict= self.style['title'])
         plt.xticks(x_pos, self.win_types, rotation=45)
         plt.tight_layout()
+
         plt.savefig(f'data_output/{reach_height}_wins_per_win_type')
         # plt.show()
     def _win_type_wins(self, reach_height):
