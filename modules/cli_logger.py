@@ -3,7 +3,7 @@ import logging, os ,argparse
 
 class CLILogger:
     def __init__(self,log_name,loggers):
-        self.args = self._cli_config()
+        self.args,self.parser = self._cli_config()
         if not self.args.command:
             self.log_lvl = logging.INFO
         else:
@@ -48,4 +48,4 @@ class CLILogger:
         deep_command.add_argument('deep', help='explore all data and plots', action= 'store_true')
         _add_options(deep_command)
 
-        return parser.parse_args()
+        return parser.parse_args(), parser

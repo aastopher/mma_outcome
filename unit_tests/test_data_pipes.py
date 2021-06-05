@@ -27,6 +27,17 @@ class TestDataPipe(unittest.TestCase):
 
     def test_odds_data_pipe(self):
         data = ODataLoader()
-
+        self.assertTrue(data.data['r_fighter'].count().sum()>0)
+        self.assertTrue(data.data['b_fighter'].count().sum()>0)
+        self.assertTrue(data.data['r_odds'].count().sum()>0)
+        self.assertTrue(data.data['b_odds'].count().sum()>0)
+        self.assertTrue(data.data['date'].count().sum()>0)
+        self.assertTrue(data.data['location'].count().sum()>0)
+        self.assertTrue(data.data['country'].count().sum()>0)
+        self.assertTrue(data.data['winner'].count().sum()>0)
+        self.assertTrue(data.data['title_bout'].count().sum()>0)
+        self.assertTrue(data.data['weight_class'].count().sum()>0)
+        self.assertTrue(data.data['gender'].count().sum()>0)
+        
 if __name__ == '__main__':
     unittest.main()
