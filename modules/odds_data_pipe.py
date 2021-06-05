@@ -44,24 +44,24 @@ class DataLoader:
             )
 
             # Drop NA values
-            rawDataLogger.info('Dropping NaN rows')
+            rawDataLogger.debug('Dropping NaN rows')
             df.dropna(how= 'all', inplace= True)
 
             # Rename our columns for consistency
-            rawDataLogger.info('Renaming column headings')
+            rawDataLogger.debug('Renaming column headings')
             cols = ['r_fighter', 'b_fighter', 'r_odds', 'b_odds', 'date', 'location', 'country', 'winner', 'title_bout', 'weight_class', 'gender']
             df.columns = cols
 
             # Add resolved winner column with name
-            rawDataLogger.info('Resolving fight winner with fighter name')
+            rawDataLogger.debug('Resolving fight winner with fighter name')
             df['winner_resolved'] = [df['r_fighter'] if x.lower() == 'red' else df['b_fighter'] for x in df['winner']]
 
             # Add resolved country column with country removed from location
-            rawDataLogger.info('Resolving location name to split-out country')
+            rawDataLogger.debug('Resolving location name to split-out country')
             df['location_resolved'] = [x[0:x.rfind(',')].strip() for x in df['location']]
 
             # Clean string data
-            rawDataLogger.info('Converting string columns to lower')
+            rawDataLogger.debug('Converting string columns to lower')
             df['r_fighter'] = df['r_fighter'].str.lower()
             df['b_fighter'] = df['b_fighter'].str.lower()
             df['location_resolved'] = df['location_resolved'].str.lower()

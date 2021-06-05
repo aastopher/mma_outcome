@@ -11,6 +11,7 @@ plotterLogger = logging.getLogger('Plotter')
 if cli.args.command == None or cli.args.output[0] == '':
     prefix = ''
 else:
+    plotterLogger.debug(f'Prefix \'{prefix}\' added to plot output files')
     prefix = cli.args.output[0] + '_'
 
 class Plotter:
@@ -22,12 +23,14 @@ class Plotter:
         self.r_win_type_wins = self._win_type_wins('reach')
         self.h_win_type_wins = self._win_type_wins('height')
     def _create_plots(self):
+        plotterLogger.info('Creating plots')
         self._win_plot('reach')
         self._win_plot('height')
         self._win_type_plot('reach')
         self._win_type_plot('height')
     def _win_plot(self, reach_height):
-        plotterLogger.info(f'plotting {reach_height} wins')
+        plotterLogger.info(f'Plotting {reach_height} wins')
+        plotterLogger.debug(f'Collecting data: {reach_height} pie plot')
         if reach_height == 'reach':
             wins = self.data['reach_win'].tolist().count(True)
             losses = self.data['reach_win'].tolist().count(False)
@@ -37,7 +40,6 @@ class Plotter:
             wins = self.data['height_win'].tolist().count(True)
             losses = self.data['height_win'].tolist().count(False)
         data = [float(wins/len(self.data))*100,float(losses/len(self.data))*100]
-
         fig, ax = plt.subplots(figsize =(10, 7))
         ax.set_title(f"{reach_height.capitalize()} Win-Loss Distribution", fontdict= self.style['title'])
         fig.set_facecolor(self.style['face_color_primary'])
@@ -67,7 +69,7 @@ class Plotter:
         plt.savefig(f'data_output/{prefix}{reach_height}_pie')
         # plt.show()
     def _win_type_plot(self, reach_height):
-        plotterLogger.info(f'plotting {reach_height} win types')
+        plotterLogger.info(f'Plotting {reach_height} win types')
         if reach_height == 'reach':
             wins = self.r_win_type_wins.loc[0].tolist()
         if reach_height == 'height':
@@ -85,10 +87,10 @@ class Plotter:
         plt.title(f"{reach_height.capitalize()} Wins Per Win Type", fontdict= self.style['title'])
         plt.xticks(x_pos, self.win_types, rotation=45)
         plt.tight_layout()
-
         plt.savefig(f'data_output/{prefix}{reach_height}_wins_per_win_type')
         # plt.show()
     def _win_type_wins(self, reach_height):
+        plotterLogger.debug(f'Collecting data: {reach_height} bar plot')
         win_type_wins = pd.DataFrame(columns = set(self.data['win_type'].tolist()))
         for type in self.win_types:
             type_indexs = self.data.index[self.data['win_type'] == type].tolist()

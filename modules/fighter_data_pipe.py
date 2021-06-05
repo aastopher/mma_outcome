@@ -10,12 +10,6 @@ processedDataLogger = logging.getLogger('ProcessedData')
 calculatedDataLogger = logging.getLogger('CalculatedData')
 infoLogger = logging.getLogger('console')
 
-# Set prefix correctly if empty
-if cli.args.command == None or cli.args.output[0] == '':
-    prefix = ''
-else:
-    prefix = cli.args.output[0] + '_'
-
 #instantiate static vars
 MONTH_NUMS = {'january':'01','february':'02','march':'03','april':'04','may':'05','june':'06','july':'07','august':'08','september':'09','october':'10','november':'11','december':'12'}
 
@@ -26,13 +20,13 @@ class RawData:
         self.fighters = []
         self.matches = []
         if os.path.exists('data/raw_fighter_details.csv'):
-            rawDataLogger.info('parsing raw data')
+            rawDataLogger.info('Parsing raw data')
             self._load_fighters()
             self._load_matches()
     def _load_fighters(self):
         try:
             rawDataLogger.debug('\'raw_fighter_details.csv\' exists')
-            rawDataLogger.debug('parsing \'raw_fighter_details.csv\' into Fighter DataFrame')
+            rawDataLogger.debug('Parsing \'raw_fighter_details.csv\' into Fighter DataFrame')
             f = pd.read_csv('data/raw_fighter_details.csv',header=None,skiprows=[0])
             for i in range(len(f)):
                 if not pd.isna(f[3][i]) and not pd.isna(f[1][i]):
@@ -49,7 +43,7 @@ class RawData:
     def _load_matches(self):
         try:
             rawDataLogger.debug('\'raw_total_fight_data.csv\' exists')
-            rawDataLogger.debug('parsing \'raw_total_fight_data.csv\' into Match DataFrame')
+            rawDataLogger.debug('Parsing \'raw_total_fight_data.csv\' into Match DataFrame')
             f = pd.read_csv('data/raw_total_fight_data.csv',header=None,skiprows=[0])
             for i in range(len(f)):
                 r_fighter = f[0][i].split(';')[0].lower()
@@ -93,12 +87,12 @@ class ProcessedData:
         self._height_outcome()
         if os.path.exists('data/raw_fighter_details.csv') and os.path.exists('data/raw_total_fight_data.csv') and not os.path.exists('data_output/processed_data.csv'):
             if not os.path.exists('data_output'):
-                processedDataLogger.info('creating data_output directory')
+                processedDataLogger.debug('Creating data_output directory')
                 os.mkdir('data_output')
-            processedDataLogger.debug('writing \'proccessed_data.csv\'')
+            processedDataLogger.debug('Writing \'proccessed_data.csv\'')
             self.data.to_csv(f'data_output/processed_data.csv')
     def _pre_proc_data(self):
-        processedDataLogger.info('pre-processing data for generated results')
+        processedDataLogger.info('Pre-processing data for generated results')
         r_reach,r_height = [],[]
         b_reach,b_height = [],[]
         #add reach and height for each fighter to the processed dataframe
@@ -111,7 +105,7 @@ class ProcessedData:
         self.data['b_reach'],self.data['b_height'] = b_reach,b_height
         return self
     def _reach__outcome(self):
-        processedDataLogger.info('generating reach outcomes')
+        processedDataLogger.info('Generating reach outcomes')
         for i in range(len(self.raw_data.matches)):
             r_fighter = (self.raw_data.matches['r_fighter'][i],self.raw_data.fighters.loc[str(self.raw_data.matches['r_fighter'][i])][0])
             b_fighter = (self.raw_data.matches['b_fighter'][i],self.raw_data.fighters.loc[str(self.raw_data.matches['b_fighter'][i])][0])
@@ -126,7 +120,7 @@ class ProcessedData:
         self.data['reach_win'] = self.reach_outcome
         return self
     def _height_outcome(self):
-        processedDataLogger.info('generating height outcomes')
+        processedDataLogger.info('Generating height outcomes')
         for i in range(len(self.raw_data.matches)):
             r_fighter = (self.raw_data.matches['r_fighter'][i],self.raw_data.fighters.loc[str(self.raw_data.matches['r_fighter'][i])][1])
             b_fighter = (self.raw_data.matches['b_fighter'][i],self.raw_data.fighters.loc[str(self.raw_data.matches['b_fighter'][i])][1])
@@ -151,10 +145,10 @@ class CalculatedData:
         try:
             if os.path.exists('data_output/processed_data.csv'):
                 self.data = pd.read_csv('data_output/processed_data.csv',header=None,skiprows=[0],names=['r_fighter','r_reach','r_height','b_fighter','b_reach','b_height','win_type','last_round','match_type','match_length','referee','date','winner','reach_win','height_win'])
-                calculatedDataLogger.info('loaded existing processed_data')
+                calculatedDataLogger.info('Loaded existing processed_data')
             else:
                 self.data = ProcessedData().data
-                calculatedDataLogger.info('processed raw_data')
+                calculatedDataLogger.info('Processed raw_data')
             if np.sum(np.count_nonzero(self.data['reach_win']))>0 and np.sum(np.count_nonzero(self.data['height_win']))>0:
                 self.reach_win_percentage = np.round_(np.sum(self.data['reach_win'].tolist())/len(self.data)*100, decimals = 2)
                 self.height_win_percentage = np.round_(np.sum(self.data['height_win'].tolist())/len(self.data)*100,decimals = 2)

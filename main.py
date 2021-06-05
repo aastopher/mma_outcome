@@ -36,13 +36,14 @@ LIGHT_STYLE = {
     'blue' : '#5469c4'}
 
 #instantiate main logger and cli
-cli = CLILogger('analyser',['DataMashup'])
+cli = CLILogger('analyzer',['DataMashup'])
 logger = logging.getLogger('DataMashup')
 
 # Set prefix correctly if empty
 if cli.args.command == None or cli.args.output[0] == '':
     prefix = ''
 else:
+    logger.debug(f'Prefix \'{prefix}\' added to plot output files')
     prefix = cli.args.output[0] + '_'
 
 class DataMashup():
@@ -53,6 +54,7 @@ class DataMashup():
 
     def _import_data(self, dataset, which_dataset):
         """ Imports odds or fighter data into the class. """
+        logger.debug(f'Importing data from {which_dataset}')
         if not isinstance(dataset, pd.DataFrame):
             logger.error('Dataframe required!')
             raise Exception('Dataframe required!')
@@ -67,7 +69,7 @@ class DataMashup():
 
     def _merge_data(self):
         """ Combines two datasets into a single numpy array. """
-        logger.info('EXECUTING _merge_data()')
+        logger.debug('EXECUTING _merge_data()')
         # Attempt merge on fighter data keys
         try:
             master = self.odds_data.merge(self.fighter_data, on= ['r_fighter', 'b_fighter'])
@@ -87,21 +89,22 @@ class DataMashup():
             plot (Boolean): Indicates whether to plot the output or not.
             style (Dict): Dictionary of styling.
         """
-
+        logger.info(f'Plotting scatter odds vs reach')
         # Subset data for odds and reach
+        logger.debug(f'Collecting data: odds vs reach')
         odds_reach = self.aggregate_data[['r_odds', 'r_reach', 'b_odds', 'b_reach']]
         odds_reach_copy = odds_reach.copy()
 
         # Fill empty rows to avoid annoying Pandas errors
+        logger.debug(f'Filling empty rows: odds vs reach')
         odds_reach_copy.loc[:, 'reach_high'] = np.nan
         odds_reach_copy.loc[:, 'reach_low'] = np.nan
         odds_reach_copy.loc[:, 'odds_reach_high'] = np.nan
         odds_reach_copy.loc[:, 'odds_reach_low'] = np.nan
         odds_reach_copy.loc[:, 'reach_advantage'] = ''
 
-        # print(odds_reach.loc[:, 'reach_advantage'])
-
         # Mutate dataframe to indicate reach advantage and associated odds
+        logger.debug(f'Shaping data frame: odds vs reach')
         for index, row in odds_reach_copy.iterrows():
             if row['r_reach'] > row['b_reach']:
                 # Add column with r fighter reach and indicate reach advantage
@@ -120,10 +123,12 @@ class DataMashup():
                 odds_reach_copy.loc[index, 'reach_advantage'] = 'b_fighter'
 
         # Filter out rows in which the fighter reaches were the same
+        logger.debug(f'Filtering data frame: odds vs reach')
         filtered_odds_reach = odds_reach_copy[odds_reach_copy.reach_advantage != '']
         advantage_odds_reach = filtered_odds_reach[['reach_high', 'odds_reach_high']]
         disadvantage_odds_reach = filtered_odds_reach[['reach_low', 'odds_reach_low']]
         # Calculate averages for advantage and no-advantage
+        logger.debug(f'Calculating results: odds vs reach')
         high = advantage_odds_reach.groupby('reach_high').mean('odds_reach_high')
         low = disadvantage_odds_reach.groupby('reach_low').mean('odds_reach_low')
         # Calculate the regression lines
@@ -137,6 +142,7 @@ class DataMashup():
 
         # Plot scatters
         if plot:
+            logger.debug(f'Setting up scatter plots')
             # Setup basic plotting structure
             fig_1, ax_1 = plt.subplots(nrows= 2, ncols= 1)
             fig_1.set_size_inches(13, 10)
@@ -203,31 +209,33 @@ class DataMashup():
             ax_2.plot(high.index, hm * high.index + hb, color= style['red'], linestyle= '--')
             ax_2.plot(low.index, lm * low.index + lb, color= style['blue'], linestyle= '--')
 
+            logger.debug(f'Plotting scatters')
             plt.savefig(f'data_output/{prefix}odds_reach')
             # plt.show()
 
 def main():
     def _load_data_sets():
-        # Get both datasets
+        logger.debug(f'Loading odds and reach data sets')
         odds_data = DataLoader()
         fighter_data = CalculatedData()
         return odds_data,fighter_data
 
-    def _load_analyser():
+    def _load_analyzer():
         odds_data,fighter_data = _load_data_sets()
-        # Load odds data and fight data
-        analyser = DataMashup()
-        analyser._import_data(odds_data.data, 'odds')
-        analyser._import_data(fighter_data.data, 'fighter')
+        logger.debug(f'Analyzing data')
+        analyzer = DataMashup()
+        analyzer._import_data(odds_data.data, 'odds')
+        analyzer._import_data(fighter_data.data, 'fighter')
 
         # Combine dataframes
-        analyser._merge_data()
+        analyzer._merge_data()
 
-        return odds_data,fighter_data,analyser
+        return odds_data,fighter_data,analyzer
 
     # Handle 'explore' command
     if cli.args.command == 'explore':
         odds_data,fighter_data = _load_data_sets()
+        logger.debug(f'Exploring initial data sets')
         if cli.args.dark_mode:
             odds_plotter = OddsPlotter(DARK_STYLE, odds_data.data)
             fighter_plotter = FighterPlotter(DARK_STYLE, fighter_data.data)
@@ -239,23 +247,25 @@ def main():
 
     # Handle 'analyze' command
     if cli.args.command == 'analyze':
-        odds_data,fighter_data,analyser = _load_analyser()
+        odds_data,fighter_data,analyzer = _load_analyzer()
+        logger.debug(f'Analyzing combined data sets')
         if cli.args.dark_mode:
-            analyser._scatter_odds_vs_reach(DARK_STYLE, True)
+            analyzer._scatter_odds_vs_reach(DARK_STYLE, True)
         else:
-            analyser._scatter_odds_vs_reach(LIGHT_STYLE, True)
+            analyzer._scatter_odds_vs_reach(LIGHT_STYLE, True)
 
     # Handle 'deep' command
     if cli.args.command == 'deep':
-        odds_data,fighter_data,analyser = _load_analyser()
+        odds_data,fighter_data,analyzer = _load_analyzer()
+        logger.debug(f'Deep analysis: exploring initial data sets & analyzing combined data sets')
         if cli.args.dark_mode:
             odds_plotter = OddsPlotter(DARK_STYLE, odds_data.data)
             fighter_plotter = FighterPlotter(DARK_STYLE, fighter_data.data)
-            analyser._scatter_odds_vs_reach(DARK_STYLE, True)
+            analyzer._scatter_odds_vs_reach(DARK_STYLE, True)
         else:
             odds_plotter = OddsPlotter(LIGHT_STYLE, odds_data.data)
             fighter_plotter = FighterPlotter(LIGHT_STYLE, fighter_data.data)
-            analyser._scatter_odds_vs_reach(LIGHT_STYLE, True)
+            analyzer._scatter_odds_vs_reach(LIGHT_STYLE, True)
         odds_plotter._create_plots()
         fighter_plotter._create_plots()
 

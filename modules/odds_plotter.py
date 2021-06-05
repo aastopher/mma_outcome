@@ -10,6 +10,7 @@ plotterLogger = logging.getLogger('Plotter')
 if cli.args.command == None or cli.args.output[0] == '':
     prefix = ''
 else:
+    plotterLogger.debug(f'Prefix \'{prefix}\' added to plot output files')
     prefix = cli.args.output[0] + '_'
 
 class Plotter():
@@ -22,7 +23,7 @@ class Plotter():
         plotterLogger.info('EXECUTING _create_plots()')
 
         # Convert dataframe to numpy matrix
-        plotterLogger.info('Converting data frame to numpy array')
+        plotterLogger.debug('Converting data frame to numpy array')
         arr = self.data.to_numpy()
 
         # Get all row values for r_odds and b_odds
@@ -59,6 +60,7 @@ class Plotter():
         # Q2: How do odds vary between top weight classes?
 
         # Get the weight_class array and create boolean masks for each class
+        plotterLogger.debug('Collecting data: odds by weight class')
         wgt_array = arr[:, 9]
         lw_mask = wgt_array == 'Lightweight'
         ww_mask = wgt_array == 'Welterweight'
@@ -66,6 +68,7 @@ class Plotter():
         lhw_mask = wgt_array == 'Light Heavyweight'
 
         # Apply the masks to get the odds for each weight class
+        plotterLogger.debug('Applying masks: odds by weight class')
         w_1 = arr[lw_mask, 2]
         w_2 = arr[lw_mask, 3]
         x_1 = arr[ww_mask, 2]
@@ -143,11 +146,13 @@ class Plotter():
         # Q3: How do the odds vary by gender?
 
         # Get the gender array and create boolean masks for each gender
+        plotterLogger.debug('Collecting data: odds var by gender')
         gender_array = arr[:, 10]
         m_mask = gender_array == 'MALE'.lower()
         f_mask = gender_array == 'FEMALE'.lower()
 
         # Apply the masks to get the odds for each gender
+        plotterLogger.debug('Applying masks: odds var by gender')
         a_1 = arr[f_mask, 2]
         a_2 = arr[f_mask, 3]
         b_1 = arr[m_mask, 2]

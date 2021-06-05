@@ -34,6 +34,7 @@ class CLILogger:
             parser.add_argument('-o', '--output', help= 'define a prefix for all export data', dest= 'output', nargs=1, default=[''])
 
         parser = argparse.ArgumentParser(description= f'gather and analyze MMA fight and odds data', epilog= 'Ready? FIGHT!')
+        # parser.add_argument('-v', '--verbose', help= 'add logging verbosity', action= 'store_const', dest= 'log_level', const= logging.DEBUG, default= logging.INFO)
         subparser = parser.add_subparsers(dest='command')
 
         explore_command = subparser.add_parser('explore')
