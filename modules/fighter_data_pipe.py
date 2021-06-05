@@ -3,16 +3,15 @@ import sys
 sys.path.append("modules/")
 from setup import *
 
-#instantiate cli args and class loggers using cli_logger module
+# instantiate cli args and class loggers using cli_logger module
 cli = CLILogger('fighter_data_pipe',['RawData','ProcessedData','CalculatedData'])
 rawDataLogger = logging.getLogger('RawData')
 processedDataLogger = logging.getLogger('ProcessedData')
 calculatedDataLogger = logging.getLogger('CalculatedData')
 infoLogger = logging.getLogger('console')
 
-#instantiate static vars
+# instantiate static vars
 MONTH_NUMS = {'january':'01','february':'02','march':'03','april':'04','may':'05','june':'06','july':'07','august':'08','september':'09','october':'10','november':'11','december':'12'}
-
 
 class RawData:
     def __init__(self):
@@ -83,8 +82,8 @@ class ProcessedData:
         self.raw_data = RawData()
         self.data = pd.DataFrame(self.raw_data.matches, columns = ['r_fighter','r_reach','r_height','b_fighter','b_reach','b_height','win_type','last_round','match_type','match_length','referee','date','winner','reach_win','height_win'])
         self._pre_proc_data()
-        self._reach__outcome()
-        self._height_outcome()
+        self._generate_reach_outcome()
+        self._generate_height_outcome()
         if os.path.exists('data/raw_fighter_details.csv') and os.path.exists('data/raw_total_fight_data.csv') and not os.path.exists('data_output/processed_data.csv'):
             if not os.path.exists('data_output'):
                 processedDataLogger.debug('Creating data_output directory')
@@ -104,7 +103,7 @@ class ProcessedData:
         self.data['r_reach'],self.data['r_height'] = r_reach,r_height
         self.data['b_reach'],self.data['b_height'] = b_reach,b_height
         return self
-    def _reach__outcome(self):
+    def _generate_reach_outcome(self):
         processedDataLogger.info('Generating reach outcomes')
         for i in range(len(self.raw_data.matches)):
             r_fighter = (self.raw_data.matches['r_fighter'][i],self.raw_data.fighters.loc[str(self.raw_data.matches['r_fighter'][i])][0])
@@ -119,7 +118,7 @@ class ProcessedData:
                 self.reach_outcome.append(False)
         self.data['reach_win'] = self.reach_outcome
         return self
-    def _height_outcome(self):
+    def _generate_height_outcome(self):
         processedDataLogger.info('Generating height outcomes')
         for i in range(len(self.raw_data.matches)):
             r_fighter = (self.raw_data.matches['r_fighter'][i],self.raw_data.fighters.loc[str(self.raw_data.matches['r_fighter'][i])][1])
@@ -150,6 +149,7 @@ class CalculatedData:
                 self.data = ProcessedData().data
                 calculatedDataLogger.info('Processed raw_data')
             if np.sum(np.count_nonzero(self.data['reach_win']))>0 and np.sum(np.count_nonzero(self.data['height_win']))>0:
+                calculatedDataLogger.debug('Calculating reach and height win percentage')
                 self.reach_win_percentage = np.round_(np.sum(self.data['reach_win'].tolist())/len(self.data)*100, decimals = 2)
                 self.height_win_percentage = np.round_(np.sum(self.data['height_win'].tolist())/len(self.data)*100,decimals = 2)
             else:

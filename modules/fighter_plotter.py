@@ -3,11 +3,11 @@ import sys
 sys.path.append("modules/")
 from setup import *
 
-#instantiate cli args and class loggers using cli_logger module
+# instantiate cli args and class loggers using cli_logger module
 cli = CLILogger('fighter_plotter',['Plotter'])
 plotterLogger = logging.getLogger('Plotter')
 
-# Set prefix correctly if empty
+# set prefix correctly if empty
 if cli.args.command == None or cli.args.output[0] == '':
     prefix = ''
 else:
@@ -40,6 +40,8 @@ class Plotter:
             wins = self.data['height_win'].tolist().count(True)
             losses = self.data['height_win'].tolist().count(False)
         data = [float(wins/len(self.data))*100,float(losses/len(self.data))*100]
+
+        # setup plot attributes
         fig, ax = plt.subplots(figsize =(10, 7))
         ax.set_title(f"{reach_height.capitalize()} Win-Loss Distribution", fontdict= self.style['title'])
         fig.set_facecolor(self.style['face_color_primary'])
@@ -52,6 +54,7 @@ class Plotter:
         ax.tick_params(colors= self.style['tick_color'])
         ax.tick_params(colors= self.style['tick_color'])
 
+        # create plot
         wedges, texts, autotexts = ax.pie(data,
                                           autopct = '%.1f%%',
                                           labels = labels,
@@ -66,6 +69,7 @@ class Plotter:
                   loc ="upper left",
                   bbox_to_anchor =(1, 0, 0.5, 1))
         plt.setp(autotexts, size = self.style['label']['size'], color= 'white', weight ="bold")
+
         plt.savefig(f'data_output/{prefix}{reach_height}_pie')
         # plt.show()
     def _win_type_plot(self, reach_height):
@@ -74,21 +78,26 @@ class Plotter:
             wins = self.r_win_type_wins.loc[0].tolist()
         if reach_height == 'height':
             wins = self.h_win_type_wins.loc[0].tolist()
+        x_pos = [i*2 for i, _ in enumerate(self.win_types)]
+
+        # setup plot attributes
         fig, ax = plt.subplots(figsize =(10, 10))
         ax.patch.set_facecolor(self.style['face_color_secondary'])
         fig.set_facecolor(self.style['face_color_primary'])
         ax.grid(color= self.style['grid_color'], linestyle= '--', linewidth=0.7)
         ax.tick_params(colors= self.style['tick_color'])
 
-        x_pos = [i*2 for i, _ in enumerate(self.win_types)]
+        # create plot
         plt.bar(x_pos, wins, width=1,color=self.style['blue'])
         plt.xlabel('Win Types')
         plt.ylabel(f'{reach_height.capitalize()} Wins')
         plt.title(f"{reach_height.capitalize()} Wins Per Win Type", fontdict= self.style['title'])
         plt.xticks(x_pos, self.win_types, rotation=45)
         plt.tight_layout()
+
         plt.savefig(f'data_output/{prefix}{reach_height}_wins_per_win_type')
         # plt.show()
+    # data collection function for win type bar plots
     def _win_type_wins(self, reach_height):
         plotterLogger.debug(f'Collecting data: {reach_height} bar plot')
         win_type_wins = pd.DataFrame(columns = set(self.data['win_type'].tolist()))

@@ -35,7 +35,7 @@ LIGHT_STYLE = {
     'red' : '#e5383b',
     'blue' : '#5469c4'}
 
-#instantiate main logger and cli
+# Instantiate main logger and cli
 cli = CLILogger('analyzer',['DataMashup'])
 logger = logging.getLogger('DataMashup')
 
@@ -232,7 +232,7 @@ def main():
 
         return odds_data,fighter_data,analyzer
 
-    # Handle 'explore' command
+    # Handle 'explore' command & options
     if cli.args.command == 'explore':
         odds_data,fighter_data = _load_data_sets()
         logger.debug(f'Exploring initial data sets')
@@ -245,7 +245,7 @@ def main():
         odds_plotter._create_plots()
         fighter_plotter._create_plots()
 
-    # Handle 'analyze' command
+    # Handle 'analyze' command & options
     if cli.args.command == 'analyze':
         odds_data,fighter_data,analyzer = _load_analyzer()
         logger.debug(f'Analyzing combined data sets')
@@ -254,7 +254,7 @@ def main():
         else:
             analyzer._scatter_odds_vs_reach(LIGHT_STYLE, True)
 
-    # Handle 'deep' command
+    # Handle 'deep' command & options
     if cli.args.command == 'deep':
         odds_data,fighter_data,analyzer = _load_analyzer()
         logger.debug(f'Deep analysis: exploring initial data sets & analyzing combined data sets')
