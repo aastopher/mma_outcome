@@ -90,37 +90,37 @@ class DataMashup():
 
         # Subset data for odds and reach
         odds_reach = self.aggregate_data[['r_odds', 'r_reach', 'b_odds', 'b_reach']]
-
-        # Convert to numpy array
-        # arr = odds_reach.to_numpy()
+        odds_reach_copy = odds_reach.copy()
 
         # Fill empty rows to avoid annoying Pandas errors
-        odds_reach.loc[:, 'reach_high'] = np.nan
-        odds_reach.loc[:, 'reach_low'] = np.nan
-        odds_reach.loc[:, 'odds_reach_high'] = np.nan
-        odds_reach.loc[:, 'odds_reach_low'] = np.nan
-        odds_reach.loc[:, 'reach_advantage'] = ''
+        odds_reach_copy.loc[:, 'reach_high'] = np.nan
+        odds_reach_copy.loc[:, 'reach_low'] = np.nan
+        odds_reach_copy.loc[:, 'odds_reach_high'] = np.nan
+        odds_reach_copy.loc[:, 'odds_reach_low'] = np.nan
+        odds_reach_copy.loc[:, 'reach_advantage'] = ''
+
+        # print(odds_reach.loc[:, 'reach_advantage'])
 
         # Mutate dataframe to indicate reach advantage and associated odds
-        for index, row in odds_reach.iterrows():
+        for index, row in odds_reach_copy.iterrows():
             if row['r_reach'] > row['b_reach']:
                 # Add column with r fighter reach and indicate reach advantage
-                odds_reach.loc[index, 'reach_high'] = row['r_reach']
-                odds_reach.loc[index, 'reach_high'] = row['r_reach']
-                odds_reach.loc[index, 'odds_reach_high'] = row['r_odds']
-                odds_reach.loc[index, 'odds_reach_low'] = row['b_odds']
-                odds_reach.loc[index, 'reach_low'] = row['b_reach']
-                odds_reach.loc[index, 'reach_advantage'] = 'r_fighter'
+                odds_reach_copy.loc[index, 'reach_high'] = row['r_reach']
+                odds_reach_copy.loc[index, 'reach_high'] = row['r_reach']
+                odds_reach_copy.loc[index, 'odds_reach_high'] = row['r_odds']
+                odds_reach_copy.loc[index, 'odds_reach_low'] = row['b_odds']
+                odds_reach_copy.loc[index, 'reach_low'] = row['b_reach']
+                odds_reach_copy.loc[index, 'reach_advantage'] = 'r_fighter'
             elif row['r_reach'] < row['b_reach']:
                 # Add column with rbfighter reach and indicate reach advantage
-                odds_reach.loc[index, 'reach_high'] = row['b_reach']
-                odds_reach.loc[index, 'reach_low'] = row['r_reach']
-                odds_reach.loc[index, 'odds_reach_high'] = row['b_odds']
-                odds_reach.loc[index, 'odds_reach_low'] = row['r_odds']
-                odds_reach.loc[index, 'reach_advantage'] = 'b_fighter'
+                odds_reach_copy.loc[index, 'reach_high'] = row['b_reach']
+                odds_reach_copy.loc[index, 'reach_low'] = row['r_reach']
+                odds_reach_copy.loc[index, 'odds_reach_high'] = row['b_odds']
+                odds_reach_copy.loc[index, 'odds_reach_low'] = row['r_odds']
+                odds_reach_copy.loc[index, 'reach_advantage'] = 'b_fighter'
 
         # Filter out rows in which the fighter reaches were the same
-        filtered_odds_reach = odds_reach[odds_reach.reach_advantage != '']
+        filtered_odds_reach = odds_reach_copy[odds_reach_copy.reach_advantage != '']
         advantage_odds_reach = filtered_odds_reach[['reach_high', 'odds_reach_high']]
         disadvantage_odds_reach = filtered_odds_reach[['reach_low', 'odds_reach_low']]
         # Calculate averages for advantage and no-advantage
