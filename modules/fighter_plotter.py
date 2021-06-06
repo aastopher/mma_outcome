@@ -89,8 +89,8 @@ class Plotter:
 
         # create plot
         plt.bar(x_pos, wins, width=1,color=self.style['blue'])
-        plt.xlabel('Win Types')
-        plt.ylabel(f'{reach_height.capitalize()} Wins')
+        plt.xlabel('Win Types', fontdict= self.style['label'])
+        plt.ylabel(f'{reach_height.capitalize()} Wins', fontdict= self.style['label'])
         plt.title(f"{reach_height.capitalize()} Wins Per Win Type", fontdict= self.style['title'])
         plt.xticks(x_pos, self.win_types, rotation=45)
         plt.tight_layout()

@@ -222,5 +222,7 @@ class Plotter():
         fig_1.tight_layout()
         fig_2.tight_layout()
         fig_3.tight_layout()
-        plt.savefig(f'data_output/{prefix}odds_by_gender_plot')
+        fig_1.savefig(f'data_output/{prefix}odds_distribution')
+        fig_2.savefig(f'data_output/{prefix}odds_by_weightclass_plot')
+        fig_3.savefig(f'data_output/{prefix}odds_by_gender_plot')
         # plt.show()

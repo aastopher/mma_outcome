@@ -10,6 +10,12 @@ processedDataLogger = logging.getLogger('ProcessedData')
 calculatedDataLogger = logging.getLogger('CalculatedData')
 infoLogger = logging.getLogger('console')
 
+# Set output correctly if empty
+if cli.args.command == None or cli.args.output == False:
+    output = False
+else:
+    output = cli.args.output
+
 # instantiate static vars
 MONTH_NUMS = {'january':'01','february':'02','march':'03','april':'04','may':'05','june':'06','july':'07','august':'08','september':'09','october':'10','november':'11','december':'12'}
 
@@ -88,8 +94,9 @@ class ProcessedData:
             if not os.path.exists('data_output'):
                 processedDataLogger.debug('Creating data_output directory')
                 os.mkdir('data_output')
-            processedDataLogger.debug('Writing \'proccessed_data.csv\'')
-            self.data.to_csv(f'data_output/processed_data.csv')
+            if output:
+                processedDataLogger.debug('Writing \'proccessed_data.csv\'')
+                self.data.to_csv(f'data_output/processed_data.csv')
     def _pre_proc_data(self):
         processedDataLogger.info('Pre-processing data for generated results')
         r_reach,r_height = [],[]

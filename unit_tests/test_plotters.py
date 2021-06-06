@@ -37,7 +37,7 @@ class TestPlotter(unittest.TestCase):
 
     def test_odds_plotter(self):
         data = DataLoader()
-        plot = OPlotter(STYLE,data.data)
+        plot = OPlotter(STYLE, data.data)
         plot._create_plots()
         self.assertTrue(len(plot.data['r_fighter'].tolist()) > 0)
         self.assertTrue(len(plot.data['b_fighter'].tolist()) > 0)
@@ -49,7 +49,6 @@ class TestPlotter(unittest.TestCase):
         self.assertTrue(not os.path.exists('data_output/gender_data.csv'))
         self.assertTrue(os.path.exists('data_output/odds_by_gender_plot.png'))
         os.remove('data_output/odds_by_gender_plot.png')
-
 
 if __name__ == '__main__':
     unittest.main()
