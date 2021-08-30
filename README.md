@@ -6,13 +6,13 @@
 * [MMA Fighter Dataset](https://www.kaggle.com/rajeevw/ufcdata)
 * [MMA Odds Dataset](https://www.kaggle.com/mdabbert/ufc-fights-2010-2020-with-betting-odds)
 
-## Research Question
+## Analysis Outline
 
-For this analysis, we will look into (1) to what degree fighter attributes (height and reach) contribute to match outcome, (2) to what degree do fight characteristics (top weightclass and gender) contribute to match outcome, and finally (3) to what extent do Vegas odds follow fighter reach?
+For this analysis, we will look into (1) to what degree fighter attributes (height and reach) contribute to match outcome, (2) to what degree do fight characteristics (weightclass and gender) contribute to match outcome, and finally (3) to what extent do Vegas odds follow fighter reach?
 
 ## Analysis and Conclusion
 
-Through the analysis, we found that longer reach and and taller height contribute to a higher win percentage. Furthermore, we found that there exists a marked difference in the odds distribution between red fighter and blue fighter. Through a scatterplot, we can see that odds favor the red fighter with the blue fighter being the "underdog" when analyzing on the fighter's reach. Lastly, by looking into the mean odds by fighter reach, we found that there are a few relationships of note:
+Through the analysis, it appears that longer reach and and taller height contribute to a slightly higher win percentage. Furthermore, there exists a noticeable difference in the odds distribution between red fighter and blue fighter. Through a scatter plot, we can see that odds favor the red fighter. This can be explained by how the corners are chosen. the colors are seeded as follow Red fighter is the champion or the veteran fighter; blue fighter is the contender or underdog. Lastly, by looking into the mean odds by fighter reach, we can interpret the relationship as follows:
 * For the fighter with a reach advantage (i.e. a longer reach), as fighter reach increases, the odds increasingly favor the fighter with a reach advantage
 * For the fighter with a reach disadvantage (i.e. a shorter reach), as fighter reach increases, the odds increasingly disfavor the fighter with a reach disadvantage
 

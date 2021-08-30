@@ -134,8 +134,8 @@ class Plotter():
         ax_2[0, 1].set_title('Lightweight Blue', fontdict= self.style['label'])
         ax_2[1, 0].set_title('Welterweight Red', fontdict= self.style['label'])
         ax_2[1, 1].set_title('Welterweight Blue', fontdict= self.style['label'])
-        ax_2[2, 0].set_title('Lightweight Heavyweight Blue', fontdict= self.style['label'])
-        ax_2[2, 1].set_title('Lightweight Heavyweight Red', fontdict= self.style['label'])
+        ax_2[2, 0].set_title('Light Heavyweight Blue', fontdict= self.style['label'])
+        ax_2[2, 1].set_title('Light Heavyweight Red', fontdict= self.style['label'])
         ax_2[3, 0].set_title('Heavyweight Red', fontdict= self.style['label'])
         ax_2[3, 1].set_title('Heavyweight Blue', fontdict= self.style['label'])
 

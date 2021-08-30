@@ -1,4 +1,4 @@
-### MODULE: responsible for all plotting functions ###
+### MODULE: responsible for all fighter plotting functions ###
 import sys
 sys.path.append("modules/")
 from setup import *
