@@ -18,7 +18,7 @@ Basic exploration of the data sets reveal that longer reach and taller height co
 
 ## Dependencies
 
-to use the virtual env which has all dependencies installed run:
+to use the virtual env which has all dependencies installed run the following command from inside the project directory: <br />
 `source mma-env/bin/activate`
 
 Running the project without the venv will require the following packages:
