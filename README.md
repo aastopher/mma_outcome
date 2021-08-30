@@ -16,9 +16,12 @@ Basic exploration of the data sets reveal that longer reach and taller height co
 * For the fighter with a reach advantage (i.e. a longer reach), as fighter reach increases, the odds increasingly favor the fighter with a reach advantage
 * For the fighter with a reach disadvantage (i.e. a shorter reach), as fighter reach increases, the odds increasingly disfavor the fighter with a reach disadvantage
 
-## Installation of Packages
+## Dependencies
 
-The following custom libraries are required for the project to run:
+to use the virtual env which has all dependencies installed run:
+'source mma-env/bin/activate'
+
+Running the project without the venv will require the following packages:
 * numpy
 * pandas
 * matplotlib
