@@ -18,10 +18,7 @@ Basic exploration of the data sets reveal that longer reach and taller height co
 
 ## Dependencies
 
-To use the virtual env which has all dependencies installed run the following command from inside the project directory: <br />
-`source mma-env/bin/activate`
-
-Running the project without the venv will require the following packages:
+Running the project will require the following packages:
 * numpy
 * pandas
 * matplotlib
